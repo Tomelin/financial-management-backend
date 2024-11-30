@@ -1,0 +1,37 @@
+package repository
+
+import "github.com/synera-br/financial-management/src/backend/internal/core/entity"
+
+type IRepository interface {
+	entity.IEntity
+}
+
+type RepositoryImpl struct{}
+
+func NewRepository() IRepository {
+	return &RepositoryImpl{}
+}
+
+func (r *RepositoryImpl) Create() (*entity.Entity, error) {
+	return &entity.Entity{}, nil
+}
+
+func (r *RepositoryImpl) Get() ([]entity.Entity, error) {
+	return []entity.Entity{}, nil
+}
+
+func (r *RepositoryImpl) GetById(id *string) ([]entity.Entity, error) {
+	return []entity.Entity{}, nil
+}
+
+func (r *RepositoryImpl) GetByFilter(key, value *string) ([]entity.Entity, error) {
+	return []entity.Entity{}, nil
+}
+
+func (r *RepositoryImpl) Update(data *entity.Entity) (*entity.Entity, error) {
+	return &entity.Entity{}, nil
+}
+
+func (r *RepositoryImpl) Delete(id *string) error {
+	return nil
+}

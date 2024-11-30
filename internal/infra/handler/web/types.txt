@@ -1,0 +1,44 @@
+package web
+
+import (
+	"github.com/synera-br/financial-management/src/backend/internal/core/entity"
+	"github.com/synera-br/financial-management/src/backend/internal/core/service"
+)
+
+type IWeb interface {
+	entity.IEntity
+}
+
+type WebImpl struct {
+	svc entity.IEntity
+}
+
+func NewWeb(repo service.IService) IWeb {
+	return &WebImpl{
+		svc: repo,
+	}
+}
+
+func (w *WebImpl) Create() (*entity.Entity, error) {
+	return &entity.Entity{}, nil
+}
+
+func (w *WebImpl) Get() ([]entity.Entity, error) {
+	return []entity.Entity{}, nil
+}
+
+func (w *WebImpl) GetById(id *string) ([]entity.Entity, error) {
+	return []entity.Entity{}, nil
+}
+
+func (w *WebImpl) GetByFilter(key, value *string) ([]entity.Entity, error) {
+	return []entity.Entity{}, nil
+}
+
+func (w *WebImpl) Update(data *entity.Entity) (*entity.Entity, error) {
+	return &entity.Entity{}, nil
+}
+
+func (w *WebImpl) Delete(id *string) error {
+	return nil
+}

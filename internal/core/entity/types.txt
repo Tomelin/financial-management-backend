@@ -1,0 +1,36 @@
+package entity
+
+type Entity struct{}
+
+type IEntity interface {
+	Create() (*Entity, error)
+	Get() ([]Entity, error)
+	GetById(id *string) ([]Entity, error)
+	GetByFilter(key, value *string) ([]Entity, error)
+	Update(data *Entity) (*Entity, error)
+	Delete(id *string) error
+}
+
+func (e *Entity) Create() (*Entity, error) {
+	return &Entity{}, nil
+}
+
+func (e *Entity) Get() ([]Entity, error) {
+	return []Entity{}, nil
+}
+
+func (e *Entity) GetById(id *string) ([]Entity, error) {
+	return []Entity{}, nil
+}
+
+func (e *Entity) GetByFilter(key, value *string) ([]Entity, error) {
+	return []Entity{}, nil
+}
+
+func (e *Entity) Update(data *Entity) (*Entity, error) {
+	return &Entity{}, nil
+}
+
+func (e *Entity) Delete(id *string) error {
+	return nil
+}

@@ -1,0 +1,44 @@
+package service
+
+import (
+	"github.com/synera-br/financial-management/src/backend/internal/core/entity"
+	"github.com/synera-br/financial-management/src/backend/internal/core/repository"
+)
+
+type IService interface {
+	entity.IEntity
+}
+
+type ServiceImpl struct {
+	repo entity.IEntity
+}
+
+func NewService(repo repository.IRepository) IService {
+	return &ServiceImpl{
+		repo: repo,
+	}
+}
+
+func (s *ServiceImpl) Create() (*entity.Entity, error) {
+	return &entity.Entity{}, nil
+}
+
+func (s *ServiceImpl) Get() ([]entity.Entity, error) {
+	return []entity.Entity{}, nil
+}
+
+func (s *ServiceImpl) GetById(id *string) ([]entity.Entity, error) {
+	return []entity.Entity{}, nil
+}
+
+func (s *ServiceImpl) GetByFilter(key, value *string) ([]entity.Entity, error) {
+	return []entity.Entity{}, nil
+}
+
+func (s *ServiceImpl) Update(data *entity.Entity) (*entity.Entity, error) {
+	return &entity.Entity{}, nil
+}
+
+func (s *ServiceImpl) Delete(id *string) error {
+	return nil
+}
