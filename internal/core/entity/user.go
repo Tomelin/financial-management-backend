@@ -67,9 +67,12 @@ func NewUser(user *User) (*UserResponse, error) {
 }
 
 func (u *User) Validate() error {
-	// if u.Name == "" {
-	// 	return fmt.Errorf("name is required")
-	// }
+
+	if u.Provider == "" || u.Provider == "local" {
+		if u.Name == "" {
+			return fmt.Errorf("name is required")
+		}
+	}
 
 	if u.Email == "" {
 		return fmt.Errorf("email is required")
