@@ -4,9 +4,9 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/Tomelin/financial-management-backend/internal/core/entity"
+	"github.com/Tomelin/financial-management-backend/pkg/utils"
 	"github.com/gin-gonic/gin"
-	"github.com/synera-br/financial-management/src/backend/internal/core/entity"
-	"github.com/synera-br/financial-management/src/backend/pkg/utils"
 )
 
 type HandlerHttpInterface interface {

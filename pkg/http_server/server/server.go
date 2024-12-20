@@ -3,8 +3,8 @@ package http_server
 import (
 	"net/http"
 
+	"github.com/Tomelin/financial-management-backend/internal/core/entity"
 	"github.com/gin-gonic/gin"
-	"github.com/synera-br/financial-management/src/backend/internal/core/entity"
 	"golang.org/x/net/http2"
 
 	"github.com/prometheus/client_golang/prometheus"

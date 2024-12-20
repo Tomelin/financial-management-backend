@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 
-	"github.com/synera-br/financial-management/src/backend/internal/core/entity"
-	"github.com/synera-br/financial-management/src/backend/pkg/db"
-	"github.com/synera-br/financial-management/src/backend/pkg/observability"
+	"github.com/Tomelin/financial-management-backend/internal/core/entity"
+	"github.com/Tomelin/financial-management-backend/pkg/db"
+	"github.com/Tomelin/financial-management-backend/pkg/observability"
 	"google.golang.org/api/iterator"
 )
 

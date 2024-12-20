@@ -3,10 +3,10 @@ package entity_test
 import (
 	"testing"
 
+	"github.com/Tomelin/financial-management-backend/internal/core/entity"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
-	"github.com/synera-br/financial-management/src/backend/internal/core/entity"
 )
 
 type UserTestSuite struct {

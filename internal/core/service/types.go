@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	"github.com/synera-br/financial-management/src/backend/internal/core/entity"
+	"github.com/Tomelin/financial-management-backend/internal/core/entity"
 )
 
 func ValidateUser(ctx context.Context, user entity.IUser, email *string) *entity.ModuleError {

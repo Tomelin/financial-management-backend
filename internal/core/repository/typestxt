@@ -1,6 +1,6 @@
 package repository
 
-import "github.com/synera-br/financial-management/src/backend/internal/core/entity"
+import "github.com/Tomelin/financial-management-backend/internal/core/entity"
 
 type IRepository interface {
 	entity.IEntity

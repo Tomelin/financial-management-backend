@@ -4,11 +4,11 @@ import (
 	"context"
 	"testing"
 
+	"github.com/Tomelin/financial-management-backend/internal/core/entity"
+	"github.com/Tomelin/financial-management-backend/internal/core/service"
+	"github.com/Tomelin/financial-management-backend/tests/coremocks"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
-	"github.com/synera-br/financial-management/src/backend/internal/core/entity"
-	"github.com/synera-br/financial-management/src/backend/internal/core/service"
-	"github.com/synera-br/financial-management/src/backend/tests/coremocks"
 )
 
 type UserServiceTestSuite struct {

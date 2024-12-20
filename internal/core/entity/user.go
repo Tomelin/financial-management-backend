@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Tomelin/financial-management-backend/pkg/utils"
 	"github.com/google/uuid"
-	"github.com/synera-br/financial-management/src/backend/pkg/utils"
 )
 
 // IUser interface

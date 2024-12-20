@@ -4,7 +4,7 @@ package pkgmocks
 
 import (
 	gin "github.com/gin-gonic/gin"
-	authProvider "github.com/synera-br/financial-management/src/backend/pkg/authProvider"
+	authProvider "github.com/Tomelin/financial-management-backend/pkg/authProvider"
 
 	goth "github.com/markbates/goth"
 

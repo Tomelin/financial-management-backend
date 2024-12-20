@@ -10,10 +10,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/markbates/goth/gothic"
 
-	"github.com/synera-br/financial-management/src/backend/internal/core/entity"
-	middleware "github.com/synera-br/financial-management/src/backend/internal/infra/handler/middleware/authorization"
-	"github.com/synera-br/financial-management/src/backend/pkg/authProvider"
-	"github.com/synera-br/financial-management/src/backend/pkg/logger"
+	"github.com/Tomelin/financial-management-backend/internal/core/entity"
+	middleware "github.com/Tomelin/financial-management-backend/internal/infra/handler/middleware/authorization"
+	"github.com/Tomelin/financial-management-backend/pkg/authProvider"
+	"github.com/Tomelin/financial-management-backend/pkg/logger"
 )
 
 type IAuthHandlerHttp interface {

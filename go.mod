@@ -1,4 +1,4 @@
-module github.com/synera-br/financial-management/src/backend
+module github.com/Tomelin/financial-management
 
 go 1.23.1
 

@@ -5,9 +5,9 @@ import (
 	"errors"
 	"time"
 
-	"github.com/synera-br/financial-management/src/backend/internal/core/entity"
-	"github.com/synera-br/financial-management/src/backend/pkg/observability"
-	"github.com/synera-br/financial-management/src/backend/pkg/utils"
+	"github.com/Tomelin/financial-management-backend/internal/core/entity"
+	"github.com/Tomelin/financial-management-backend/pkg/observability"
+	"github.com/Tomelin/financial-management-backend/pkg/utils"
 )
 
 type UserSvc struct {

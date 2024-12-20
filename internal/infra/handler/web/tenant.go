@@ -6,9 +6,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/synera-br/financial-management/src/backend/internal/core/entity"
-	"github.com/synera-br/financial-management/src/backend/internal/core/service"
-	"github.com/synera-br/financial-management/src/backend/pkg/utils"
+	"github.com/Tomelin/financial-management-backend/internal/core/entity"
+	"github.com/Tomelin/financial-management-backend/internal/core/service"
+	"github.com/Tomelin/financial-management-backend/pkg/utils"
 )
 
 type TenantHandlerHttpInterface interface {

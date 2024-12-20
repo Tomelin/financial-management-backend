@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/Tomelin/financial-management-backend/internal/core/entity"
+	"github.com/Tomelin/financial-management-backend/internal/core/repository"
+	"github.com/Tomelin/financial-management-backend/pkg/logger"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/google/uuid"
-	"github.com/synera-br/financial-management/src/backend/internal/core/entity"
-	"github.com/synera-br/financial-management/src/backend/internal/core/repository"
-	"github.com/synera-br/financial-management/src/backend/pkg/logger"
 )
 
 type AuthorizationSvc struct {

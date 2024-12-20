@@ -8,7 +8,6 @@
     pkgs.go
     pkgs.air
   ];
-  
   # Sets environment variables in the workspace
   env = {};
   idx = {
@@ -20,7 +19,7 @@
     workspace = {
       onCreate = {
         # Open editors for the following files by default, if they exist:
-        default.openFiles = ["cmd/main.go"];
+        default.openFiles = ["./cmd/main.go"];
       };
       # Runs when a workspace is (re)started
       onStart= {

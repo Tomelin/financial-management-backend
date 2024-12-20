@@ -7,9 +7,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/synera-br/financial-management/src/backend/internal/core/entity"
-	middleware "github.com/synera-br/financial-management/src/backend/internal/infra/handler/middleware/authorization"
-	"github.com/synera-br/financial-management/src/backend/pkg/observability"
+	"github.com/Tomelin/financial-management-backend/internal/core/entity"
+	middleware "github.com/Tomelin/financial-management-backend/internal/infra/handler/middleware/authorization"
+	"github.com/Tomelin/financial-management-backend/pkg/observability"
 )
 
 type TransactionCategoryHandlerHttpInterface interface {

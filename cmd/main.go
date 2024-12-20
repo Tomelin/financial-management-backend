@@ -4,15 +4,15 @@ import (
 	"context"
 	"log"
 
-	"github.com/synera-br/financial-management/src/backend/configs"
-	"github.com/synera-br/financial-management/src/backend/internal/core/repository"
-	"github.com/synera-br/financial-management/src/backend/internal/core/service"
-	"github.com/synera-br/financial-management/src/backend/internal/infra/handler/web"
-	"github.com/synera-br/financial-management/src/backend/pkg/authProvider"
-	"github.com/synera-br/financial-management/src/backend/pkg/db"
-	http_server "github.com/synera-br/financial-management/src/backend/pkg/http_server/server"
-	"github.com/synera-br/financial-management/src/backend/pkg/logger"
-	"github.com/synera-br/financial-management/src/backend/pkg/observability"
+	"github.com/Tomelin/financial-management-backend/configs"
+	"github.com/Tomelin/financial-management-backend/internal/core/repository"
+	"github.com/Tomelin/financial-management-backend/internal/core/service"
+	"github.com/Tomelin/financial-management-backend/internal/infra/handler/web"
+	"github.com/Tomelin/financial-management-backend/pkg/authProvider"
+	"github.com/Tomelin/financial-management-backend/pkg/db"
+	http_server "github.com/Tomelin/financial-management-backend/pkg/http_server/server"
+	"github.com/Tomelin/financial-management-backend/pkg/logger"
+	"github.com/Tomelin/financial-management-backend/pkg/observability"
 )
 
 func main() {
