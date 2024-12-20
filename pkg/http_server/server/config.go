@@ -11,6 +11,7 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/swag"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 )
 
 type Certificate struct {
@@ -19,14 +20,16 @@ type Certificate struct {
 }
 
 type RestAPIConfig struct {
-	Port           string `mapstructure:"port"`
-	SSLEnabled     bool   `mapstructure:"ssl_enabled"`
-	Host           string `mapstructure:"host"`
-	Version        string `mapstructure:"version"`
-	Name           string `mapstructure:"name"`
-	CertificateCrt string `mapstructure:"certificate_crt"`
-	CertificateKey string `mapstructure:"certificate_key"`
-	Token          string `mapstructure:"token"`
+	Port            string `mapstructure:"port"`
+	SSLEnabled      bool   `mapstructure:"ssl_enabled"`
+	Host            string `mapstructure:"host"`
+	Version         string `mapstructure:"version"`
+	Name            string `mapstructure:"name"`
+	CertificateCrt  string `mapstructure:"certificate_crt"`
+	CertificateKey  string `mapstructure:"certificate_key"`
+	Token           string `mapstructure:"token"`
+	OtelServiceName string `mapstructure:"otel_service_name"`
+	Mode            string `mapstructure:"mode"`
 }
 
 type RestAPI struct {
@@ -72,10 +75,23 @@ var SwaggerInfo = &swag.Spec{
 
 func newRestAPI(config *RestAPIConfig, s *sessions.CookieStore) (*gin.Engine, *gin.RouterGroup) {
 
+	if config == nil {
+		config = &RestAPIConfig{}
+	}
+	serviceName := "app_name"
+	if config.OtelServiceName != "" {
+		serviceName = config.OtelServiceName
+	}
+
 	router := gin.New()
+	if config.Mode == "release" {
+		gin.SetMode(gin.ReleaseMode)
+	}
+	router.Use(otelgin.Middleware(serviceName))
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
-	router.Use(sessions.Sessions("X-Authorization", *s))
+
+	router.Use(sessions.Sessions("Authorization", *s))
 
 	router.UseH2C = true
 

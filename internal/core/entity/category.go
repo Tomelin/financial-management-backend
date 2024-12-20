@@ -18,12 +18,12 @@ type ICategory interface {
 }
 
 type Category struct {
-	Name        string `json:"name" binding:"required,min=3,max=50"`
-	Description string `json:"description,omitempty"`
+	Name        string `json:"name" binding:"required,min=3,max=50" firestore:"name"`
+	Description string `json:"description,omitempty" firestore:"description"`
 }
 
 type CategoryResponse struct {
-	ID string `json:"id"`
+	ID string `json:"id" firestore:"id"`
 	Category
 }
 

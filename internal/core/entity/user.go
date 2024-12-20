@@ -1,50 +1,82 @@
 package entity
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"reflect"
+	"strings"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/synera-br/financial-management/src/backend/pkg/utils"
 )
 
+// IUser interface
+// Methods that must be implemented by the user
+// Create, Get, GetById, Update, Delete, GetByFilterMany, GetByFilterOne, GetByEmail
 type IUser interface {
-	Create(*UserResponse) (*UserResponse, error)
-	Get() ([]UserResponse, error)
-	GetById(id *string) (*UserResponse, error)
-	Update(data *UserResponse) (*UserResponse, error)
-	Delete(id *string) error
-	GetByFilterMany(key string, value *string) ([]UserResponse, error)
-	GetByFilterOne(key string, value *string) (*UserResponse, error)
+	Create(ctx context.Context, user *AccountUser) (*AccountUser, error)
+	Get(ctx context.Context) ([]AccountUser, error)
+	GetById(ctx context.Context, id *string) (*AccountUser, error)
+	Update(ctx context.Context, data *AccountUser) (*AccountUser, error)
+	Delete(ctx context.Context, id *string) error
+	GetByFilterMany(ctx context.Context, filter []QueryDBClause) ([]AccountUser, error)
+	GetByFilterOne(ctx context.Context, filter []QueryDBClause) (*AccountUser, error)
+	GetByEmail(ctx context.Context, email *string) (*AccountUser, error)
 }
 
-type User struct {
-	Name        string `json:"name" binding:"required"`
-	Email       string `json:"email" binding:"required"`
-	AvatarURL   string `json:"avatar_url"`
-	Provider    string `json:"provider" binding:"required"`
-	FirstName   string `json:"first_name"`
-	LastName    string `json:"last_name"`
-	NickName    string `json:"nick_name"`
-	Description string `json:"description"`
-	UserID      string `json:"user_id"`
-	Location    string `json:"location"`
+type AccountRoles struct {
+	Key   string `json:"key"   firestore:"key"`
+	Name  string `json:"name"  firestore:"name"`
+	Value string `json:"value" firestore:"vale"`
 }
 
-type UserResponse struct {
-	ID string `json:"id"`
+// AccountUser struct
+// User struct with tenant_id and roles
+// ID, User, TenantID, Roles
+type AccountUser struct {
+	ID       string         `json:"id" firestore:"id"`
+	TenantID string         `json:"tenant_id" firestore:"tenant_id"`
+	Roles    []AccountRoles `json:"roles" firestore:"roles"`
 	User
+	CreatedAt time.Time `json:"created_at" firestore:"create_at"`
+	UpdatedAt time.Time `json:"updated_at" firestore:"update_at"`
 }
 
-func NewUser(user *User) (*UserResponse, error) {
+// User struct
+// User struct with name, email, avatar_url, provider, first_name, last_name, nick_name, description, user_id, location
+type User struct {
+	Name        string `json:"name" binding:"required" firestore:"name"`
+	Email       string `json:"email" binding:"required" firestore:"email"`
+	AvatarURL   string `json:"avatar_url" firestore:"avatar_url"`
+	Provider    string `json:"provider" binding:"required" firestore:"provider"`
+	FirstName   string `json:"first_name" firestore:"first_name"`
+	LastName    string `json:"last_name" firestore:"last_name"`
+	NickName    string `json:"nick_name" firestore:"nick_name"`
+	Description string `json:"description" firestore:"description"`
+	UserID      string `json:"user_id" firestore:"user_id"`
+	Location    string `json:"location" firestore:"location"`
+}
 
-	id, err := uuid.NewV7()
-	if err != nil {
-		return nil, err
+// NewUser function
+// Create a new user
+// Return a new AccountUser and error
+func NewUser(user *User) (*AccountUser, error) {
+
+	id, _ := uuid.NewV7()
+
+	tenant_id, _ := uuid.NewV7()
+
+	if user == nil || *user == (User{}) {
+		return nil, errors.New("account user cannot be empty")
 	}
 
-	u := &UserResponse{
-		ID: id.String(),
+	u := &AccountUser{
+		ID:        id.String(),
+		TenantID:  tenant_id.String(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 		User: User{
 			Name:        user.Name,
 			Email:       user.Email,
@@ -68,42 +100,48 @@ func NewUser(user *User) (*UserResponse, error) {
 
 func (u *User) Validate() error {
 
-	if u.Provider == "" || u.Provider == "local" {
-		if u.Name == "" {
-			return fmt.Errorf("name is required")
-		}
+	if u == nil || reflect.DeepEqual(*u, User{}) {
+		return errors.New("account user cannot be empty")
 	}
 
 	if u.Email == "" {
-		return fmt.Errorf("email is required")
+		return fmt.Errorf("invalid email")
 	}
 
 	if !utils.IsValidEmail(u.Email) {
-		return fmt.Errorf("email is invalid")
+		return errors.New("invalid email")
 	}
 
-	if u.Provider == "" {
-		return fmt.Errorf("provider is required")
+	if u.Provider == "" || (!strings.Contains(strings.ToLower(u.Provider), "local") && !strings.Contains(strings.ToLower(u.Provider), "google")) {
+		return errors.New("provider is required")
 	}
 
 	return nil
 }
 
 func (c *User) IsEmpty(data *User) bool {
-
 	return data == nil || reflect.DeepEqual(*data, User{})
 }
 
-func (u *UserResponse) Validate() error {
+func (u *AccountUser) Validate() error {
+
+	if u == nil || reflect.DeepEqual(*u, AccountUser{}) {
+		return errors.New("account user cannot be empty")
+	}
+
 	_, err := uuid.Parse(u.ID)
 	if err != nil {
-		return fmt.Errorf("id is required")
+		return fmt.Errorf("invalid user ID")
+	}
+
+	_, err = uuid.Parse(u.TenantID)
+	if err != nil {
+		return fmt.Errorf("tenant ID is required")
 	}
 
 	return u.User.Validate()
 }
 
-func (c *UserResponse) IsEmpty(data *UserResponse) bool {
-
-	return data == nil || reflect.DeepEqual(*data, UserResponse{})
+func (c *AccountUser) IsEmpty(data *AccountUser) bool {
+	return data == nil || reflect.DeepEqual(*data, AccountUser{})
 }

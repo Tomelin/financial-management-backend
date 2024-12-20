@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/synera-br/financial-management/src/backend/internal/core/entity"
 	"golang.org/x/net/http2"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -57,8 +58,15 @@ func setHeader(c *gin.Context) {
 }
 
 func (s *RestAPI) MiddlewareHeader(c *gin.Context) {
-	if c.GetHeader("Authorization") != s.Config.Token {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "not authorized"})
+	const SkipMiddlewareKey = "skipMiddleware"
+
+	if c.GetBool(SkipMiddlewareKey) {
+		c.Next()
+		return
+	}
+
+	if c.GetHeader("Authorization") == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": entity.Error("invalid token", "token", "MiddlewareHeader", entity.ApplicationLayerHandler, entity.ResponseCodeUnauthorized)})
 		c.Writer.Flush()
 		c.Abort()
 		return
@@ -67,13 +75,6 @@ func (s *RestAPI) MiddlewareHeader(c *gin.Context) {
 }
 
 func (s *RestAPI) ValidateToken(c *gin.Context) {
-
-	// if c.GetHeader("Authorization") != s.Config.Token {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "not authorized"})
-	// 	c.Writer.Flush()
-	// 	c.Abort()
-	// 	return
-	// }
 
 	c.Next()
 }

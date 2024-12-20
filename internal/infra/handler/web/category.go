@@ -2,7 +2,6 @@ package web
 
 import (
 	"errors"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -24,10 +23,10 @@ type CategoryHandlerHttp struct {
 	Service entity.ICategory
 }
 
-func NewCategoryHandlerHttp(svc entity.ICategory, routerGroup *gin.RouterGroup, middleware ...func(c *gin.Context)) HandlerHttpInterface {
+func NewCategoryHandlerHttp(svc *entity.ICategory, routerGroup *gin.RouterGroup, middleware ...func(c *gin.Context)) HandlerHttpInterface {
 
 	load := &CategoryHandlerHttp{
-		Service: svc,
+		Service: *svc,
 	}
 
 	load.handlers(routerGroup, middleware...)
@@ -104,7 +103,6 @@ func (cat *CategoryHandlerHttp) GetById(c *gin.Context) {
 
 	response, err := cat.Service.GetById(&categoryId)
 	if err != nil {
-		log.Println(err)
 		if err.Error() == "not found" {
 			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		} else {

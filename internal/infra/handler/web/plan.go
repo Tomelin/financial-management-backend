@@ -1,17 +1,15 @@
 package web
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 
 	"github.com/synera-br/financial-management/src/backend/internal/core/entity"
-	"github.com/synera-br/financial-management/src/backend/pkg/observability"
 	"github.com/synera-br/financial-management/src/backend/pkg/utils"
 )
 
-type UserHandlerHttpInterface interface {
+type PlanHandlerHttpInterface interface {
 	Create(c *gin.Context)
 	Get(c *gin.Context)
 	GetById(c *gin.Context)
@@ -21,14 +19,13 @@ type UserHandlerHttpInterface interface {
 	GetByFilterOne(c *gin.Context)
 }
 
-type UserHandlerHttp struct {
-	Service entity.IUser
-	trace   *observability.Tracer
+type PlanHandlerHttp struct {
+	Service entity.IPlan
 }
 
-func NewUserHandlerHttp(svc *entity.IUser, trace *observability.Tracer, routerGroup *gin.RouterGroup, middleware ...func(c *gin.Context)) UserHandlerHttpInterface {
+func NewPlanHandlerHttp(svc *entity.IPlan, routerGroup *gin.RouterGroup, middleware ...func(c *gin.Context)) PlanHandlerHttpInterface {
 
-	lab := &UserHandlerHttp{
+	lab := &PlanHandlerHttp{
 		Service: *svc,
 	}
 
@@ -38,37 +35,35 @@ func NewUserHandlerHttp(svc *entity.IUser, trace *observability.Tracer, routerGr
 
 }
 
-func (c *UserHandlerHttp) handlers(routerGroup *gin.RouterGroup, middleware ...func(c *gin.Context)) {
+func (c *PlanHandlerHttp) handlers(routerGroup *gin.RouterGroup, middleware ...func(c *gin.Context)) {
 	middlewareList := make([]gin.HandlerFunc, len(middleware))
 	for i, mw := range middleware {
 		middlewareList[i] = mw
 	}
 
-	routerGroup.POST("/user", c.Create)
-	routerGroup.GET("/user/:id", append(middlewareList, c.GetById)...)
-	routerGroup.GET("/user/search", append(middlewareList, c.GetByFilterMany)...)
-	routerGroup.GET("/user/filter", append(middlewareList, c.GetByFilterOne)...)
-	routerGroup.GET("/user", append(middlewareList, c.Get)...)
-	routerGroup.PUT("/user/:id", append(middlewareList, c.Update)...)
-	routerGroup.DELETE("/user/:id", append(middlewareList, c.Delete)...)
+	routerGroup.POST("/plan", append(middlewareList, c.Create)...)
+	routerGroup.GET("/plan/:id", append(middlewareList, c.GetById)...)
+	routerGroup.GET("/plan/search", append(middlewareList, c.GetByFilterMany)...)
+	routerGroup.GET("/plan/filter", append(middlewareList, c.GetByFilterOne)...)
+	routerGroup.GET("/plan", append(middlewareList, c.Get)...)
+	routerGroup.PUT("/plan/:id", append(middlewareList, c.Update)...)
+	routerGroup.DELETE("/plan/:id", append(middlewareList, c.Delete)...)
 }
 
-// CreateUserResponse    godoc
+// CreatePlanResponse    godoc
 // @Summary     create a new lab destroy
-// @Tags        User
+// @Tags        Plan
 // @Accept       json
 // @Produce     json
 // @Description create a new lab destroy
-// @Success     200 {object} entity.EntityResponse
+// @Success     200 {object} entity.PlanResponse
 // @Failure     404 {object} string
 // @Failure     500 {object} string
-// @Router      /User [post]
-func (obj *UserHandlerHttp) Create(c *gin.Context) {
-	ctx, span := obj.trace.Trace.Start(c.Request.Context(), fmt.Sprintf("%s.Create", string(entity.ApplicationLayerHandler)))
-	defer span.End()
+// @Router      /plan [post]
+func (obj *PlanHandlerHttp) Create(c *gin.Context) {
 
-	var user entity.User
-	if err := c.BindJSON(&user); err != nil {
+	var plan entity.PlanResponse
+	if err := c.BindJSON(&plan); err != nil {
 		if err.Error() == "EOF" {
 			c.JSON(http.StatusBadRequest, "body is required")
 			c.Abort()
@@ -79,36 +74,34 @@ func (obj *UserHandlerHttp) Create(c *gin.Context) {
 		return
 	}
 
-	u, err := entity.NewUser(&user)
+	u, err := entity.NewPlan(&plan)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err.Error())
 		c.Abort()
 		return
 	}
-
-	result, err := obj.Service.Create(ctx, u)
+	result, err := obj.Service.Create(u)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err.Error())
 		c.Abort()
 		return
 	}
-
 	c.JSON(http.StatusAccepted, result)
 }
 
-// GetAllUserResponse    godoc
+// GetAllPlanResponse    godoc
 // @Summary     get all lab destroy
-// @Tags        User
+// @Tags        Plan
 // @Accept       json
 // @Produce     json
 // @Description get all lab destroy
-// @Success     200 {object} []entity.EntityResponse
+// @Success     200 {object} []entity.PlanResponse
 // @Failure     404 {object} string
 // @Failure     500 {object} string
-// @Router      /User [get]
-func (obj *UserHandlerHttp) Get(c *gin.Context) {
-	ctx := c.Request.Context()
-	response, err := obj.Service.Get(ctx)
+// @Router      /plan [get]
+func (obj *PlanHandlerHttp) Get(c *gin.Context) {
+
+	response, err := obj.Service.Get()
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		c.Abort()
@@ -126,25 +119,25 @@ func (obj *UserHandlerHttp) Get(c *gin.Context) {
 
 // GetById      godoc
 // @Summary     get a lab destroy by ID
-// @Tags        User
+// @Tags        Plan
 // @Accept      json
 // @Produce     json
 // @Param       id path string true "found"
 // @Description get a lab destroy by ID
-// @Success     200 {object} entity.EntityResponse
+// @Success     200 {object} entity.PlanResponse
 // @Failure     404 {object} string
 // @Failure     500 {object} string
-// @Router      /User/{id} [get]
-func (obj *UserHandlerHttp) GetById(c *gin.Context) {
+// @Router      /plan/{id} [get]
+func (obj *PlanHandlerHttp) GetById(c *gin.Context) {
 
-	userId := c.Param("id")
-	if userId == "" {
+	planId := c.Param("id")
+	if planId == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "id is required"})
 		c.Abort()
 		return
 	}
-	ctx := c.Request.Context()
-	response, err := obj.Service.GetById(ctx, &userId)
+
+	response, err := obj.Service.GetById(&planId)
 	if err != nil {
 		if err.Error() == "not found" {
 			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
@@ -166,19 +159,18 @@ func (obj *UserHandlerHttp) GetById(c *gin.Context) {
 
 // GetByFilterMany  godoc
 // @Summary     get a lab destroy by email or project
-// @Tags        User
+// @Tags        Plan
 // @Accept      json
 // @Produce     json
 // @Param       email query string false "email@domain.com"
 // @Param       project query string false "project_name"
-// @Param       username query string false "username"
 // @Param       available query boolean false "string default" default(false)
 // @Description get a lab destroy by email or project
-// @Success     200 {object} []entity.EntityResponse
+// @Success     200 {object} []entity.PlanResponse
 // @Failure     404 {object} string
 // @Failure     500 {object} string
-// @Router      /User/search [get]
-func (obj *UserHandlerHttp) GetByFilterMany(c *gin.Context) {
+// @Router      /plan/search [get]
+func (obj *PlanHandlerHttp) GetByFilterMany(c *gin.Context) {
 
 	key := c.Query("key")
 	value := c.Query("value")
@@ -189,26 +181,19 @@ func (obj *UserHandlerHttp) GetByFilterMany(c *gin.Context) {
 		return
 	}
 
-	filter := []entity.QueryDBClause{
-		{
-			Clause: entity.QueryClauseAnd,
-			Queries: []entity.QueryDB{
-				{
-					Key:       key,
-					Value:     value,
-					Condition: string(entity.QueryFirebaseEqual),
-				},
-			},
-		},
-	}
-	ctx := c.Request.Context()
-	response, err := obj.Service.GetByFilterMany(ctx, filter)
+	response, err := obj.Service.GetByFilterMany(key, &value)
 	if err != nil {
 		if err.Error() == "not found" {
 			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		} else {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		}
+		c.Abort()
+		return
+	}
+
+	if response == nil {
+		c.JSON(http.StatusNotFound, gin.H{"messagem": "not found"})
 		c.Abort()
 		return
 	}
@@ -218,19 +203,18 @@ func (obj *UserHandlerHttp) GetByFilterMany(c *gin.Context) {
 
 // GetByFilterOne  godoc
 // @Summary     get a lab destroy by email or project
-// @Tags        User
+// @Tags        Plan
 // @Accept      json
 // @Produce     json
 // @Param       email query string false "email@domain.com"
 // @Param       project query string false "project_name"
-// @Param       username query string false "username"
 // @Param       available query boolean false "string default" default(false)
 // @Description get a lab destroy by email or project
-// @Success     200 {object} []entity.EntityResponse
+// @Success     200 {object} []entity.PlanResponse
 // @Failure     404 {object} string
 // @Failure     500 {object} string
-// @Router      /User/search [get]
-func (obj *UserHandlerHttp) GetByFilterOne(c *gin.Context) {
+// @Router      /plan/search [get]
+func (obj *PlanHandlerHttp) GetByFilterOne(c *gin.Context) {
 
 	key := c.Query("key")
 	value := c.Query("value")
@@ -241,21 +225,7 @@ func (obj *UserHandlerHttp) GetByFilterOne(c *gin.Context) {
 		return
 	}
 
-	filter := []entity.QueryDBClause{
-		{
-			Clause: entity.QueryClauseAnd,
-			Queries: []entity.QueryDB{
-				{
-					Key:       key,
-					Value:     value,
-					Condition: string(entity.QueryFirebaseEqual),
-				},
-			},
-		},
-	}
-
-	ctx := c.Request.Context()
-	response, err := obj.Service.GetByFilterOne(ctx, filter)
+	response, err := obj.Service.GetByFilterOne(key, &value)
 	if err != nil {
 		if err.Error() == "not found" {
 			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
@@ -266,27 +236,33 @@ func (obj *UserHandlerHttp) GetByFilterOne(c *gin.Context) {
 		return
 	}
 
+	if response == nil || response.ID == "" {
+		c.JSON(http.StatusNotFound, gin.H{"message": "not found"})
+		c.Abort()
+		return
+	}
+
 	c.JSON(http.StatusOK, response)
 }
 
-func (obj *UserHandlerHttp) Update(c *gin.Context) {
+func (obj *PlanHandlerHttp) Update(c *gin.Context) {
 
-	userId := c.Param("id")
-	if userId == "" {
+	planId := c.Param("id")
+	if planId == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "id is required"})
 		c.Abort()
 		return
 	}
 
-	err := utils.ValidateUUID(&userId)
+	err := utils.ValidateUUID(&planId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		c.Abort()
 		return
 	}
 
-	var user entity.AccountUser
-	if err := c.ShouldBindJSON(&user); err != nil {
+	var plan entity.PlanResponse
+	if err := c.ShouldBindJSON(&plan); err != nil {
 		if err.Error() == "EOF" {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "request body is required"})
 			c.Abort()
@@ -296,14 +272,13 @@ func (obj *UserHandlerHttp) Update(c *gin.Context) {
 		return
 	}
 
-	if user.ID != userId {
+	if plan.ID != planId {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "id in body must be equal to id in path"})
 		c.Abort()
 		return
 	}
 
-	ctx := c.Request.Context()
-	data, err := obj.Service.Update(ctx, &user)
+	data, err := obj.Service.Update(&plan)
 	if err != nil {
 		if err.Error() == "not found" {
 			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
@@ -317,16 +292,16 @@ func (obj *UserHandlerHttp) Update(c *gin.Context) {
 	c.JSON(http.StatusOK, data)
 }
 
-func (obj *UserHandlerHttp) Delete(c *gin.Context) {
+func (obj *PlanHandlerHttp) Delete(c *gin.Context) {
 
-	userId := c.Param("id")
-	if userId == "" {
+	planId := c.Param("id")
+	if planId == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "id is required"})
 		c.Abort()
 		return
 	}
-	ctx := c.Request.Context()
-	err := obj.Service.Delete(ctx, &userId)
+
+	err := obj.Service.Delete(&planId)
 
 	if err != nil {
 		if err.Error() == "not found" {

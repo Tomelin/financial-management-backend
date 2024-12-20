@@ -93,7 +93,7 @@ func (a *SessionStore) Callback(w http.ResponseWriter, r *http.Request) (*goth.U
 		return nil, err
 	}
 
-	session, err := gothic.Store.Get(r, "X-Authorization")
+	session, err := gothic.Store.Get(r, "access_token")
 	if err != nil {
 		return nil, err
 	}
@@ -132,7 +132,7 @@ func (a *SessionStore) Logout(c *gin.Context, w http.ResponseWriter, r *http.Req
 
 func (a *SessionStore) IsLoggedIn(w http.ResponseWriter, r *http.Request) (*goth.User, error) {
 
-	session, err := gothic.Store.Get(r, "X-Authorization")
+	session, err := gothic.Store.Get(r, "access_token")
 	if err != nil {
 		return nil, err
 	}

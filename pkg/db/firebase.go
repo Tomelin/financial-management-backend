@@ -35,7 +35,7 @@ type FirebaseDatabaseInterface interface {
 	Documents(ctx context.Context, name string) *firestore.DocumentIterator
 }
 
-func NewFirebaseDatabaseConnection(fields any, kind string) (FirebaseDatabaseInterface, error) {
+func NewFirebaseDatabaseConnection(ctx context.Context, fields any, kind string) (FirebaseDatabaseInterface, error) {
 
 	fbConfig, err := parseConfig(fields)
 	if err != nil {
@@ -47,8 +47,6 @@ func NewFirebaseDatabaseConnection(fields any, kind string) (FirebaseDatabaseInt
 	if err != nil {
 		return nil, err
 	}
-
-	ctx := context.Background()
 
 	opt := option.WithCredentialsJSON(dbJSON)
 	_, err = firebase.NewApp(ctx, nil, opt)
